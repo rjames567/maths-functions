@@ -1,4 +1,6 @@
-superscripts = {
+import fractions
+
+superscript = {
 	0: "⁰",
 	1: "¹",
 	2: "²",
@@ -10,3 +12,51 @@ superscripts = {
 	8: "⁸",
 	9: "⁹"
 }
+
+class RealNumber:
+	def __init__(self, value=None, fraction_threshold=1, as_fraction=True, **kwargs):
+		"""
+		Parameters:
+			value (float)				->		Value of the number.
+			numerator (int)				->		Numerator of the fraction.
+			denominator (int)			-> 		Denominator of the fraction
+			fraction_threshold (int)	->		The number of decimal places before the number is represented as a fraction. 0 means never represent as a fraction (Default: 1)
+			as_fraction (bool)			->		Whether the value should be treated as the true value, or as a fraction. True value will be faster, but may be less accurate. (Default: True)
+			decimal_places (int)		->		The number of decimal places to round to. Only applies if as_fraction is false. (Default: None)
+			significant_figures (int)	->		The number of significant figures to round to. Only applies if as_fraction is false. (Default: 5)
+		"""
+
+		if value is not None:
+			self._value = value
+			if type(self._value) is int or not as_fraction:
+				self._numerator = self._value
+				self._denominator = 1
+			else:
+				self._numerator, self._denominator = tuple(str(fractions.Fraction(self._value).limit_denominator(max_denominator=100000)).split("/"))
+				
+		else:
+			self._numerator = kwargs["numerator"]
+			self._denominator = kwargs["denominator"]
+			self._value = self._numerator / self._denominator
+
+		self._fraction_threshold = fraction_threshold
+		self._as_fraction = as_fraction
+
+		self._decimal_places = kwargs.get("decimal_places", None)
+		self._significant_figures = kwargs.get("significant_figures", None)
+
+		if self._significant_figures is None and self._decimal_places is None:
+			self._significant_figures = 5
+		elif self._significant_figures >= self._decimal_places:
+			self._decimal_places = None
+		else:
+			self._significant_figures = None
+
+	def _disp_vars(self):
+		print(f"_value: {self._value}")
+		print(f"_numerator: {self._numerator}")
+		print(f"_denominator: {self._denominator}")
+		print(f"_fraction_threshold: {self._fraction_threshold}")
+		print(f"_as_fraction: {self._as_fraction}")
+		print(f"_decimal_places: {self._decimal_places}")
+		print(f"_significant_figures: {self._significant_figures}")
