@@ -26,13 +26,15 @@ class RealNumber:
 			significant_figures (int)	->		The number of significant figures to round to. Only applies if as_fraction is false. (Default: 5)
 		"""
 
+		self._as_fraction = as_fraction
+		
 		if value is not None:
 			self._value = value
-			if type(self._value) is int or not as_fraction:
+			if type(self._value) is int or not self._as_fraction:
 				self._numerator = self._value
 				self._denominator = 1
 			else:
-				self._numerator, self._denominator = tuple(str(fractions.Fraction(self._value).limit_denominator(max_denominator=100000)).split("/"))
+				self._simplify_fraction()
 				
 		else:
 			self._numerator = kwargs["numerator"]
@@ -40,7 +42,6 @@ class RealNumber:
 			self._value = self._numerator / self._denominator
 
 		self._fraction_threshold = fraction_threshold
-		self._as_fraction = as_fraction
 
 		self._decimal_places = kwargs.get("decimal_places", None)
 		self._significant_figures = kwargs.get("significant_figures", None)
@@ -52,11 +53,35 @@ class RealNumber:
 		else:
 			self._significant_figures = None
 
+	def _simplify_fraction(self):
+		if self._as_fraction:
+			self._numerator, self._denominator = tuple(str(fractions.Fraction(self._value).limit_denominator(max_denominator=100000)).split("/"))
+
 	def _disp_vars(self):
-		print(f"_value: {self._value}")
-		print(f"_numerator: {self._numerator}")
-		print(f"_denominator: {self._denominator}")
-		print(f"_fraction_threshold: {self._fraction_threshold}")
-		print(f"_as_fraction: {self._as_fraction}")
-		print(f"_decimal_places: {self._decimal_places}")
-		print(f"_significant_figures: {self._significant_figures}")
+		print("Variables")
+		print(f"\t_value: {self._value}")
+		print(f"\t_numerator: {self._numerator}")
+		print(f"\t_denominator: {self._denominator}")
+		print(f"\t_fraction_threshold: {self._fraction_threshold}")
+		print(f"\t_as_fraction: {self._as_fraction}")
+		print(f"\t_decimal_places: {self._decimal_places}")
+		print(f"\t_significant_figures: {self._significant_figures}")
+
+		print("@property")
+		print(f"\tdenominator: {self.denominator}")
+		print(f"\tnumerator: {self.numerator}")
+		print()
+
+	@property
+	def denominator(self):
+		if self._as_fraction:
+			return self._denominator
+		else:
+			return None
+
+	@property
+	def numerator(self):
+		if self._as_fraction:
+			return self._numerator
+		else:
+			return None
