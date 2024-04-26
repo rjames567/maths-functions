@@ -30,10 +30,9 @@ class RealNumber:
 		
 		if value is not None:
 			self._value = value
-			if type(self._value) is int or not self._as_fraction:
-				self._numerator = self._value
-				self._denominator = 1
-			else:
+			self._numerator = self._value
+			self._denominator = 1
+			if type(self._value) is not int and self._as_fraction:
 				self._simplify_fraction()
 				
 		else:
@@ -42,6 +41,7 @@ class RealNumber:
 			self._value = self._numerator / self._denominator
 
 		self._fraction_threshold = fraction_threshold
+		
 
 		self._decimal_places = kwargs.get("decimal_places", None)
 		self._significant_figures = kwargs.get("significant_figures", None)
@@ -55,7 +55,10 @@ class RealNumber:
 
 	def _simplify_fraction(self):
 		if self._as_fraction:
-			self._numerator, self._denominator = tuple(str(fractions.Fraction(self._value).limit_denominator(max_denominator=100000)).split("/"))
+			self._value = self._numerator / self._denominator
+			temp = tuple(str(fractions.Fraction(self._value).limit_denominator(max_denominator=100000)).split("/"))
+			self._numerator = int(temp[0])
+			self._denominator = int(temp[1]) if len(temp) > 1 else 1
 
 	def _disp_vars(self):
 		print("Variables")
@@ -81,12 +84,38 @@ class RealNumber:
 		else:
 			return None
 
+	@denominator.setter
+	def denominator(self, value):
+		if self._as_fraction:
+			if type(value) == int:
+				self._denominator = value
+				self._simplify_fraction()
+				self._value = self._numerator / self._denominator
+			else:
+				dtype = repr(type(value)).split("'")[1]
+				raise Exception(f"Cannot assign denominator to '{dtype}'. Numerator must be an integer")
+		else:
+			raise Exception("Cannot assign denominator to a RealNumber that is not a fraction.")
+	
 	@property
 	def numerator(self):
 		if self._as_fraction:
 			return self._numerator
 		else:
 			return None
+
+	@numerator.setter
+	def numerator(self, value):
+		if self._as_fraction:
+			if type(value) == int:
+				self._numerator = value
+				self._simplify_fraction()
+				self._value = self._numerator / self._denominator
+			else:
+				dtype = repr(type(value)).split("'")[1]
+				raise Exception(f"Cannot assign numerator to '{dtype}'. Numerator must be an integer")
+		else:
+			raise Exception("Cannot assign numerator to a RealNumber that is not a fraction.")
 
 	@property
 	def exact_value(self):
