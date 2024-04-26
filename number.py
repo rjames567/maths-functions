@@ -70,6 +70,8 @@ class RealNumber:
 		print("@property")
 		print(f"\tdenominator: {self.denominator}")
 		print(f"\tnumerator: {self.numerator}")
+		print(f"\texact_value: {self.exact_value}")
+		print(f"\trounded_value: {self.rounded_value}")
 		print()
 
 	@property
@@ -85,3 +87,13 @@ class RealNumber:
 			return self._numerator
 		else:
 			return None
+
+	@property
+	def exact_value(self):
+		return self._value
+
+	@property
+	def rounded_value(self):
+		if self._significant_figures is not None:
+			return round(self._value, self._significant_figures)
+		return round(self._value, self._decimal_places)
