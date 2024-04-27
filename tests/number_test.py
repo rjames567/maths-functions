@@ -122,3 +122,20 @@ class TestRealNumber(unittest.TestCase):
 
 		n5 = number.RealNumber(2/3, as_fraction=False, decimal_places=7)
 		assert (n5.rounded_value == 0.6666667)
+
+	def test_decimal_places_rounding(self):
+		n1 = number.RealNumber(5/3)
+		print(n1.rounded_value)
+		assert(n1.rounded_value == 1.6667)
+	
+		n2 = number.RealNumber(222, signficant_figures=2)
+		assert(n2.rounded_value == 220)
+	
+		n3 = number.RealNumber(numerator=3, denominator=4, significant_figures=1)
+		assert(n3.rounded_value == 0.8)
+	
+		n4 = number.RealNumber(9/7, as_fraction=False)
+		assert (n4.rounded_value == 12.857)
+	
+		n5 = number.RealNumber(2/3, as_fraction=False, significant_figures=7)
+		assert (n5.rounded_value == 0.6666667)

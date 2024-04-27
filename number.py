@@ -48,10 +48,11 @@ class RealNumber:
 
 		if self._significant_figures is None and self._decimal_places is None:
 			self._significant_figures = 5
-		elif self._significant_figures >= self._decimal_places:
-			self._decimal_places = None
-		else:
-			self._significant_figures = None
+		elif self._significant_figures is not None and self._decimal_places is not None:
+			if self._significant_figures >= self._decimal_places:
+				self._decimal_places = None
+			else:
+				self._significant_figures = None
 
 	def _simplify_fraction(self):
 		if self._as_fraction:
