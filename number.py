@@ -1,4 +1,5 @@
 import fractions
+import math
 
 superscript = {
 	0: "⁰",
@@ -125,5 +126,5 @@ class RealNumber:
 	@property
 	def rounded_value(self):
 		if self._significant_figures is not None:
-			return round(self._value, self._significant_figures)
+			return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
 		return round(self._value, self._decimal_places)
