@@ -123,7 +123,7 @@ class TestRealNumber(unittest.TestCase):
 		n5 = number.RealNumber(2/3, as_fraction=False, decimal_places=7)
 		assert (n5.rounded_value == 0.6666667)
 
-	def test_decimal_places_rounding(self):
+	def test_significant_figures_rounding(self):
 		n1 = number.RealNumber(5/3)
 		print(n1.rounded_value)
 		assert(n1.rounded_value == 1.6667)
