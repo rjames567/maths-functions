@@ -126,5 +126,6 @@ class RealNumber:
 	@property
 	def rounded_value(self):
 		if self._significant_figures is not None:
+			# https://stackoverflow.com/a/3413529
 			return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
 		return round(self._value, self._decimal_places)
