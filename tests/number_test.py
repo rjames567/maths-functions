@@ -152,3 +152,22 @@ class TestRealNumber(unittest.TestCase):
 
 		n4 = number.RealNumber(123.23402, decimal_places=2)
 		assert(n4.standard_form == "1.2323E2")
+
+	def test_standard_form_setter(self):
+		n1 = number.RealNumber(1)
+		n1.standard_form = "5E-1"
+		assert(
+			n1.numerator == 1 and
+			n1.denominator == 2 and
+			n1.exact_value == (1/2) and
+			n1.standard_form == "5E-1"
+		)
+
+		n2 = number.RealNumber(0.23, significant_figures=2)
+		n2.standard_form = "1.2346E9"
+		assert(
+			n2.numerator == 1234600000 and
+			n2.denominator == 1 and
+			n2.exact_value == 1234600000 and
+			n2.standard_form == "1.2E9"
+		)
