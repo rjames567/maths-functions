@@ -56,9 +56,10 @@ class RealNumber:
 			else:
 				self._significant_figures = None
 
-	def _simplify_fraction(self):
+	def _simplify_fraction(self, recalculate_value=True):
 		if self._as_fraction:
-			self._value = self._numerator / self._denominator
+			if recalculate_value:
+				self._value = self._numerator / self._denominator
 			temp = tuple(str(fractions.Fraction(self._value).limit_denominator(max_denominator=100000)).split("/"))
 			self._numerator = int(temp[0])
 			self._denominator = int(temp[1]) if len(temp) > 1 else 1
@@ -78,6 +79,7 @@ class RealNumber:
 		print(f"\tnumerator: {self.numerator}")
 		print(f"\texact_value: {self.exact_value}")
 		print(f"\trounded_value: {self.rounded_value}")
+		print(f"\tstandard_form: {self.rounded_value}")
 		print()
 
 	@property
@@ -133,9 +135,7 @@ class RealNumber:
 
 	@property
 	def standard_form(self):
-		print(self._value, self.rounded_value)
-		value = self.rounded_value
-		string = str(value)
+		string = str(self.rounded_value)
 		if "e" not in string:
 			string = '{:.10000e}'.format(self.rounded_value)  # Arbitrarily large number for precision chosen as it cannot accurately represent this high, so shouldnt be rounded this much.
 		components = [float(i) for i in string.split("e")]
@@ -145,3 +145,9 @@ class RealNumber:
 			components[1] = int(components[1])
 
 		return str(components[0]) + "E" + str(components[1])
+
+	@standard_form.setter
+	def standard_form(self, value):
+		self._value = float(value)
+		self._simplify_fraction(recalculate_value=False)
+	
