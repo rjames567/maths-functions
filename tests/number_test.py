@@ -142,13 +142,13 @@ class TestRealNumber(unittest.TestCase):
 
 	def test_standard_form(self):
 		n1 = number.RealNumber(1)
-		assert(n1.standard_form == "1 x 10⁰")
+		assert(n1.standard_form == "1E0")
 
 		n2 = number.RealNumber(1234567890)
-		assert(n2.standard_form == "1.2346 x 10⁹")
+		assert(n2.standard_form == "1.2346E9")
 
 		n3 = number.RealNumber(0.00000001234)
-		assert(n3.standard_form == "1.234 x 10⁻⁸")
+		assert(n3.standard_form == "1.234E-8")
 
 		n4 = number.RealNumber(123.23402, decimal_places=2)
-		assert(n4.standard_form == "1.2323 x 10²")
+		assert(n4.standard_form == "1.2323E2")
