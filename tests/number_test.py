@@ -1,3 +1,4 @@
+import decimal
 import unittest
 import number
 
@@ -138,3 +139,16 @@ class TestRealNumber(unittest.TestCase):
 	
 		n5 = number.RealNumber(2/3, as_fraction=False, significant_figures=7)
 		assert (n5.rounded_value == 0.6666667)
+
+	def test_standard_form(self):
+		n1 = number.RealNumber(1)
+		assert(n1.standard_form == "1 x 10⁰")
+
+		n2 = number.RealNumber(1234567890)
+		assert(n2.standard_form == "1.2346 x 10⁹")
+
+		n3 = number.RealNumber(0.00000001234)
+		assert(n3.standard_form == "1.234 x 10⁻⁸")
+
+		n4 = number.RealNumber(123.23402, decimal_places=2)
+		assert(n4.standard_form == "1.2323 x 10²")
