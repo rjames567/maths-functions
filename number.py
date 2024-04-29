@@ -82,6 +82,15 @@ class RealNumber:
 		print(f"\tstandard_form: {self.rounded_value}")
 		print()
 
+	def _round(self, decimal_places=None):
+		if decimal_places is None:
+			if self._significant_figures is not None:
+				# https://stackoverflow.com/a/3413529
+				return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
+			decimal_places = self._decimal_places
+		return round(self._value, decimal_places)
+			
+
 	@property
 	def denominator(self):
 		if self._as_fraction:
@@ -132,10 +141,7 @@ class RealNumber:
 
 	@property
 	def rounded_value(self):
-		if self._significant_figures is not None:
-			# https://stackoverflow.com/a/3413529
-			return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
-		return round(self._value, self._decimal_places)
+		return self._round()
 
 	@rounded_value.setter
 	def rounded_value(self, value):
@@ -158,4 +164,7 @@ class RealNumber:
 	def standard_form(self, value):
 		self._value = float(value)
 		self._simplify_fraction(recalculate_value=False)
-	
+
+	def __round__(self, places=None):
+		# If number of places is not specified, rounds to the accuracy as given in the parameters, otherwise number of decimal places given.
+		return self._round(places)
