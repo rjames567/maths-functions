@@ -126,12 +126,20 @@ class RealNumber:
 	def exact_value(self):
 		return self._value
 
+	@exact_value.setter
+	def exact_value(self, value):
+		self._value = float(value)
+
 	@property
 	def rounded_value(self):
 		if self._significant_figures is not None:
 			# https://stackoverflow.com/a/3413529
 			return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
 		return round(self._value, self._decimal_places)
+
+	@rounded_value.setter
+	def rounded_value(self, value):
+		self._value = value
 
 	@property
 	def standard_form(self):
