@@ -165,9 +165,14 @@ class RealNumber:
 		self._value = float(value)
 		self._simplify_fraction(recalculate_value=False)
 
+	# Magic Method
+	# https://www.geeksforgeeks.org/dunder-magic-methods-python/
 	def __round__(self, places=None):
 		# If number of places is not specified, rounds to the accuracy as given in the parameters, otherwise number of decimal places given.
 		return self._round(places)
 
 	def __abs__(self):
 		return abs(self._value)
+
+	def __bool__(self):
+		return bool(self._value)
