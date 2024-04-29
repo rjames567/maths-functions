@@ -140,6 +140,55 @@ class TestRealNumber(unittest.TestCase):
 		n5 = number.RealNumber(2/3, as_fraction=False, significant_figures=7)
 		assert (n5.rounded_value == 0.6666667)
 
+	def test_round_method(self):
+		#  Significant figures
+		n1 = number.RealNumber(5/3)
+		assert(round(n1) == 1.6667)
+
+		n2 = number.RealNumber(222.123, significant_figures=2)
+		assert(round(n2) == 220)
+
+		n3 = number.RealNumber(numerator=3, denominator=4, significant_figures=1)
+		assert(round(n3) == 0.8)
+
+		n4 = number.RealNumber(9/7, as_fraction=False)
+		assert (round(n4) == 1.2857)
+
+		n5 = number.RealNumber(2/3, as_fraction=False, significant_figures=7)
+		assert (round(n5) == 0.6666667)
+
+		# Decimals
+		n1 = number.RealNumber(1/3, decimal_places=3)
+		assert(round(n1) == 0.333)
+	
+		n2 = number.RealNumber(2, decimal_places=1)
+		assert(round(n2) == 2)
+	
+		n3 = number.RealNumber(numerator=3, denominator=4, decimal_places=1)
+		assert(round(n3) == 0.8)
+	
+		n4 = number.RealNumber(9/5, as_fraction=False, decimal_places=7)
+		assert (round(n4) == 1.8)
+	
+		n5 = number.RealNumber(2/3, as_fraction=False, decimal_places=7)
+		assert (round(n5) == 0.6666667)
+
+		# Specified accuracy
+		n1 = number.RealNumber(1/3, decimal_places=3)
+		assert(round(n1, 8) == 0.33333333)
+
+		n2 = number.RealNumber(2, decimal_places=1)
+		assert(round(n2, 1) == 2)
+
+		n3 = number.RealNumber(numerator=3, denominator=4)
+		assert(round(n3, 0) == 1)
+
+		n4 = number.RealNumber(9/5, as_fraction=False, decimal_places=7)
+		assert (round(n4, 1) == 1.8)
+
+		n5 = number.RealNumber(2/3, as_fraction=False, decimal_places=7)
+		assert (round(n5, 3) == 0.667)
+
 	def test_standard_form(self):
 		n1 = number.RealNumber(1)
 		assert(n1.standard_form == "1E0")
