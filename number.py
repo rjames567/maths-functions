@@ -31,7 +31,7 @@ class RealNumber:
 		self._as_fraction = as_fraction
 		
 		if value is not None:
-			self._value = value
+			self._value = float(value)
 			self._numerator = self._value
 			self._denominator = 1
 			if type(self._value) is not int and self._as_fraction:
@@ -168,3 +168,6 @@ class RealNumber:
 	def __round__(self, places=None):
 		# If number of places is not specified, rounds to the accuracy as given in the parameters, otherwise number of decimal places given.
 		return self._round(places)
+
+	def __abs__(self):
+		return abs(self._value)
