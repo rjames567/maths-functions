@@ -2,16 +2,17 @@ import fractions
 import math
 
 superscript = {
-	0: "⁰",
-	1: "¹",
-	2: "²",
-	3: "³",
-	4: "⁴",
-	5: "⁵",
-	6: "⁶",
-	7: "⁷",
-	8: "⁸",
-	9: "⁹"
+	"0": "⁰",
+	"1": "¹",
+	"2": "²",
+	"3": "³",
+	"4": "⁴",
+	"5": "⁵",
+	"6": "⁶",
+	"7": "⁷",
+	"8": "⁸",
+	"9": "⁹",
+	"-": "⁻"
 }
 
 class RealNumber:
@@ -129,3 +130,18 @@ class RealNumber:
 			# https://stackoverflow.com/a/3413529
 			return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
 		return round(self._value, self._decimal_places)
+
+	@property
+	def standard_form(self):
+		print(self._value, self.rounded_value)
+		value = self.rounded_value
+		string = str(value)
+		if "e" not in string:
+			string = '{:.10000e}'.format(self.rounded_value)  # Arbitrarily large number for precision chosen as it cannot accurately represent this high, so shouldnt be rounded this much.
+		components = [float(i) for i in string.split("e")]
+		if int(components[0]) == components[0]:
+			components[0] = int(components[0])
+		if int(components[1]) == components[1]:
+			components[1] = int(components[1])
+
+		return str(components[0]) + "E" + str(components[1])
