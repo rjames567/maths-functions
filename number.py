@@ -16,16 +16,18 @@ superscript = {
 }
 
 class RealNumber:
-	def __init__(self, value=None, fraction_threshold=1, as_fraction=True, **kwargs):
+	def __init__(self, value=None, fraction_threshold=1, as_fraction=True, standard_form_threshold=(1E8, 1E-8), as_standard_form=False, **kwargs):
 		"""
 		Parameters:
-			value (float)				->		Value of the number.
-			numerator (int)				->		Numerator of the fraction.
-			denominator (int)			-> 		Denominator of the fraction
-			fraction_threshold (int)	->		The number of decimal places before the number is represented as a fraction. 0 means never represent as a fraction (Default: 1)
-			as_fraction (bool)			->		Whether the value should be treated as the true value, or as a fraction. True value will be faster, but may be less accurate. (Default: True)
-			decimal_places (int)		->		The number of decimal places to round to. Only applies if as_fraction is false. (Default: None)
-			significant_figures (int)	->		The number of significant figures to round to. Only applies if as_fraction is false. (Default: 5)
+			value (float)						->		Value of the number.
+			numerator (int)						->		Numerator of the fraction.
+			denominator (int)					-> 		Denominator of the fraction
+			fraction_threshold (int)			->		The number of decimal places before the number is represented as a fraction. 0 means always represent as a fraction (Default: 1)
+			as_fraction (bool)					->		Whether the value should be treated as the true value, or as a fraction. True value will be faster, but may be less accurate. (Default: True)
+			decimal_places (int)				->		The number of decimal places to round to. Only applies if as_fraction is false. (Default: None)
+			significant_figures (int)			->		The number of significant figures to round to. Only applies if as_fraction is false. (Default: 5)
+			standard_form_threshold	(tuple)		->		The point at which the number will be represented in standard form when given as a string. Gives both the upper and lower points. Se. (Default: 1E8, 1E-8)
+			as_standard_form (bool)				->		Flag that specifies whether the value should be shown in standard form. If set to False, it will be in standard form if it is outside the range specified by standard_form_threshold. If set to True, it will always be in standard form, when given as a string (Default: False)
 		"""
 
 		self._as_fraction = as_fraction
@@ -43,6 +45,8 @@ class RealNumber:
 			self._value = self._numerator / self._denominator
 
 		self._fraction_threshold = fraction_threshold
+		self._standard_form_threshold = (min(standard_form_threshold), max(standard_form_threshold))
+		self._as_standard_form = as_standard_form
 		
 
 		self._decimal_places = kwargs.get("decimal_places", None)
@@ -89,7 +93,10 @@ class RealNumber:
 				return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
 			decimal_places = self._decimal_places
 		return round(self._value, decimal_places)
-			
+
+	@property
+	def decimal_part(self):
+		return self._value - int(self._value)
 
 	@property
 	def denominator(self):
@@ -176,3 +183,14 @@ class RealNumber:
 
 	def __bool__(self):
 		return bool(self._value)
+
+	def __str__(self):
+		if self._as_standard_form:
+			return self.standard_form
+		else:
+			if self._as_fraction:
+				if len(str(self.decimal_part)[2:]) > self._fraction_threshold:
+					return f"{self._numerator}/{self._denominator}"
+				else:
+					return str(self._value)
+		return str(self.rounded_value)
