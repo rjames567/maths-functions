@@ -197,3 +197,6 @@ class RealNumber:
 
 	def __int__(self):
 		return int(self._value)
+
+	def __float__(self):
+		return float(self._value)
