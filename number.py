@@ -194,3 +194,6 @@ class RealNumber:
 				else:
 					return str(self._value)
 		return str(self.rounded_value)
+
+	def __int__(self):
+		return int(self._value)
