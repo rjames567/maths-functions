@@ -202,7 +202,12 @@ class RealNumber:
 		return float(self._value)
 
 	def __hash__(self):
+		# Allow object to be used as dictionary key (in combination with __eq__). Allows for different object instances with the same value to be treated as the same key.
 		return hash(self._value)
 
 	def __eq__(self, value):
 		return value == self._value
+
+	def __index__(self):
+		# Allow object to be used as index for lists
+		return int(self._value)
