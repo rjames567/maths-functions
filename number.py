@@ -37,7 +37,7 @@ class RealNumber:
 			self._numerator = self._value
 			self._denominator = 1
 			if type(self._value) is not int and self._as_fraction:
-				self._simplify_fraction()
+				self._simplify_fraction_initial()
 				
 		else:
 			self._numerator = kwargs["numerator"]
@@ -60,7 +60,12 @@ class RealNumber:
 			else:
 				self._significant_figures = None
 
-	def _simplify_fraction(self, recalculate_value=True):
+	def _simplify_fraction(self):
+		scale = math.gcd(self._numerator, self._denominator)
+		self._numerator = self._numerator // scale
+		self._denominator = self._denominator // scale
+	
+	def _simplify_fraction_initial(self, recalculate_value=True):
 		if self._as_fraction:
 			if recalculate_value:
 				self._value = self._numerator / self._denominator
@@ -95,6 +100,10 @@ class RealNumber:
 		return round(self._value, decimal_places)
 
 	@property
+	def is_integer(self):
+		return int(self._value) == self._value
+
+	@property
 	def decimal_part(self):
 		return self._value - int(self._value)
 
@@ -110,7 +119,7 @@ class RealNumber:
 		if self._as_fraction:
 			if type(value) == int:
 				self._denominator = value
-				self._simplify_fraction()
+				self._simplify_fraction_initial()
 				self._value = self._numerator / self._denominator
 			else:
 				dtype = repr(type(value)).split("'")[1]
@@ -130,7 +139,7 @@ class RealNumber:
 		if self._as_fraction:
 			if type(value) == int:
 				self._numerator = value
-				self._simplify_fraction()
+				self._simplify_fraction_initial()
 				self._value = self._numerator / self._denominator
 			else:
 				dtype = repr(type(value)).split("'")[1]
@@ -170,7 +179,7 @@ class RealNumber:
 	@standard_form.setter
 	def standard_form(self, value):
 		self._value = float(value)
-		self._simplify_fraction(recalculate_value=False)
+		self._simplify_fraction_initial(recalculate_value=False)
 
 	# Magic Method
 	# https://www.geeksforgeeks.org/dunder-magic-methods-python/
@@ -210,4 +219,7 @@ class RealNumber:
 
 	def __index__(self):
 		# Allow object to be used as index for lists
-		return int(self._value)
+		if self.is_integer:
+			return int(self._value)
+		else:
+			raise TypeError("list indices must be integers or slices, not float")
