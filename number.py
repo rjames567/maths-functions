@@ -60,6 +60,9 @@ class RealNumber:
 			else:
 				self._significant_figures = None
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Fraction simplification
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	def _simplify_fraction(self):
 		scale = math.gcd(self._numerator, self._denominator)
 		self._numerator = self._numerator // scale
@@ -73,40 +76,23 @@ class RealNumber:
 			self._numerator = int(temp[0])
 			self._denominator = int(temp[1]) if len(temp) > 1 else 1
 
-	def _disp_vars(self):
-		print("Variables")
-		print(f"\t_value: {self._value}")
-		print(f"\t_numerator: {self._numerator}")
-		print(f"\t_denominator: {self._denominator}")
-		print(f"\t_fraction_threshold: {self._fraction_threshold}")
-		print(f"\t_as_fraction: {self._as_fraction}")
-		print(f"\t_decimal_places: {self._decimal_places}")
-		print(f"\t_significant_figures: {self._significant_figures}")
-
-		print("@property")
-		print(f"\tdenominator: {self.denominator}")
-		print(f"\tnumerator: {self.numerator}")
-		print(f"\texact_value: {self.exact_value}")
-		print(f"\trounded_value: {self.rounded_value}")
-		print(f"\tstandard_form: {self.rounded_value}")
-		print()
-
-	def _round(self, decimal_places=None):
-		if decimal_places is None:
-			if self._significant_figures is not None:
-				# https://stackoverflow.com/a/3413529
-				return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
-			decimal_places = self._decimal_places
-		return round(self._value, decimal_places)
-
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Is type checks
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	@property
 	def is_integer(self):
 		return int(self._value) == self._value
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Number part getters
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	@property
 	def decimal_part(self):
 		return self._value - int(self._value)
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Denominator getter and setters
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	@property
 	def denominator(self):
 		if self._as_fraction:
@@ -126,7 +112,10 @@ class RealNumber:
 				raise Exception(f"Cannot assign denominator to '{dtype}'. Numerator must be an integer")
 		else:
 			raise Exception("Cannot assign denominator to a RealNumber that is not a fraction.")
-	
+
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Numerator getter and setter
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	@property
 	def numerator(self):
 		if self._as_fraction:
@@ -147,6 +136,9 @@ class RealNumber:
 		else:
 			raise Exception("Cannot assign numerator to a RealNumber that is not a fraction.")
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Exact value getter and settter
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	@property
 	def exact_value(self):
 		return self._value
@@ -154,7 +146,11 @@ class RealNumber:
 	@exact_value.setter
 	def exact_value(self, value):
 		self._value = float(value)
+		self._simplify_fraction_initial(recalculate_value=False)
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Rounded value getter and setter
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	@property
 	def rounded_value(self):
 		return self._round()
@@ -162,7 +158,11 @@ class RealNumber:
 	@rounded_value.setter
 	def rounded_value(self, value):
 		self._value = value
+		self._simplify_fraction_initial(recalculate_value=False)
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Standard Form getter and setter
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	@property
 	def standard_form(self):
 		string = str(self.rounded_value)
@@ -181,15 +181,25 @@ class RealNumber:
 		self._value = float(value)
 		self._simplify_fraction_initial(recalculate_value=False)
 
-	# Magic Method
 	# https://www.geeksforgeeks.org/dunder-magic-methods-python/
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Rounding
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	def _round(self, decimal_places=None):
+		if decimal_places is None:
+			if self._significant_figures is not None:
+				# https://stackoverflow.com/a/3413529
+				return round(self._value, self._significant_figures - int(math.floor(math.log10(abs(self._value)))) - 1)
+			decimal_places = self._decimal_places
+		return round(self._value, decimal_places)
+		
 	def __round__(self, places=None):
 		# If number of places is not specified, rounds to the accuracy as given in the parameters, otherwise number of decimal places given.
 		return self._round(places)
 
-	def __abs__(self):
-		return abs(self._value)
-
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Data type conversion
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	def __bool__(self):
 		return bool(self._value)
 
@@ -210,10 +220,16 @@ class RealNumber:
 	def __float__(self):
 		return float(self._value)
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Hashing
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	def __hash__(self):
 		# Allow object to be used as dictionary key (in combination with __eq__). Allows for different object instances with the same value to be treated as the same key.
 		return hash(self._value)
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Equality checks
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	def __eq__(self, value):
 		return value == self._value
 
@@ -232,9 +248,40 @@ class RealNumber:
 	def __ne__(self, value):
 		return self._value != value
 
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Indexing
+	# ----------------------------------------------------------------------------------------------------------------------------------------
 	def __index__(self):
 		# Allow object to be used as index for lists
 		if self.is_integer:
 			return int(self._value)
 		else:
 			raise TypeError("list indices must be integers or slices, not float")
+
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Maths operations
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	def __abs__(self):
+		return abs(self._value)
+
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	# Debugging
+	# ----------------------------------------------------------------------------------------------------------------------------------------
+	def _disp_vars(self):
+		print("Variables")
+		print(f"\t_value: {self._value}")
+		print(f"\t_numerator: {self._numerator}")
+		print(f"\t_denominator: {self._denominator}")
+		print(f"\t_fraction_threshold: {self._fraction_threshold}")
+		print(f"\t_as_fraction: {self._as_fraction}")
+		print(f"\t_decimal_places: {self._decimal_places}")
+		print(f"\t_significant_figures: {self._significant_figures}")
+	
+		print("@property")
+		print(f"\tdenominator: {self.denominator}")
+		print(f"\tnumerator: {self.numerator}")
+		print(f"\texact_value: {self.exact_value}")
+		print(f"\trounded_value: {self.rounded_value}")
+		print(f"\tstandard_form: {self.rounded_value}")
+		print()
+	
