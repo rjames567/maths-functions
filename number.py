@@ -217,6 +217,21 @@ class RealNumber:
 	def __eq__(self, value):
 		return value == self._value
 
+	def __gt__(self, value):
+		return self._value > value
+
+	def __lt__(self, value):
+		return self._value < value
+
+	def __ge__(self, value):
+		return self._value >= value
+
+	def __le__(self, value):
+		return self._value <= value
+
+	def __ne__(self, value):
+		return self._value != value
+
 	def __index__(self):
 		# Allow object to be used as index for lists
 		if self.is_integer:
